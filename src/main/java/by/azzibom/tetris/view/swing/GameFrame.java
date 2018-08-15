@@ -3,17 +3,14 @@ package by.azzibom.tetris.view.swing;
 import by.azzibom.tetris.model.TetrisGame;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.sun.jndi.toolkit.url.Uri;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.net.URL;
+import java.util.*;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * окно игры
@@ -41,22 +38,13 @@ public class GameFrame extends JFrame {
         this.drawSquareStyleStrategy = drawSquareStyleStrategy;
 
         $$$setupUI$$$();
-        try {
-            String iconName = "tetris";
-            String iconFormat = "png";
-            File imagesDir = new File(ClassLoader.getSystemResource("images").toURI());
-            File[] imageFiles = imagesDir.listFiles(pathname -> pathname.getName().matches("tetris\\d{2,3}.png"));
-            List<Image> images = new ArrayList<>(imageFiles.length);
-            for (File f : imageFiles) {
-                images.add(new ImageIcon(f.toURI().toURL()).getImage());
-            }
-            setIconImages(images);
-//            super.setIconImage(ImageIO.read(getClass().getResourceAsStream("/images/tetris_icon.png")));
-        } catch (IOException e) {
-            System.err.println("load icon exception");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+
+        int[] imageSizes = {16, 24, 32, 48, 64, 72, 96, 128, 256};
+        List<Image> images = new ArrayList<>(imageSizes.length);
+        for (int imageSize : imageSizes) {
+            images.add(new ImageIcon(ClassLoader.getSystemResource("images/tetris" + imageSize + ".png")).getImage());
         }
+        setIconImages(images);
 
         super.setTitle(game.getName());
         super.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
