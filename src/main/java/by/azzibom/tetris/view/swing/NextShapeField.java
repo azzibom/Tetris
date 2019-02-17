@@ -15,7 +15,7 @@ public class NextShapeField extends TetrisGamePanel {
 
     private int countPoints = 4;//
 
-    NextShapeField(TetrisGame game, DrawSquareStyleStrategy drawSquareStyleStrategy) {
+    NextShapeField(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy) {
         super(game, drawSquareStyleStrategy);
         super.setPreferredSize(new Dimension(countPoints * pointSize, countPoints * pointSize));
     }

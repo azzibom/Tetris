@@ -1,7 +1,7 @@
 package by.azzibom.tetris;
 
 import by.azzibom.tetris.model.TetrisGame;
-import by.azzibom.tetris.view.swing.DrawSquareStyleStrategies;
+import by.azzibom.tetris.view.swing.DrawSquareStyles;
 import by.azzibom.tetris.view.swing.GameFrame;
 
 import javax.swing.*;
@@ -20,11 +20,11 @@ public class Main {
         int fieldWidth = 10; // ширина поля
         int fieldHeight = 20; // высота толя
         int speed = 1; // начальная скорость
-        String drawStrategyName = "COLOR_STYLE_STRATEGY"; // имя стратегии отрисовки
+        String drawStrategyName = "COLOR_STYLE"; // имя стратегии отрисовки
         // создаем игру
         TetrisGame game = new TetrisGame(gameName, fieldWidth, fieldHeight, speed);
         // создаем и запускаем фрейм
-        SwingUtilities.invokeLater(() -> new GameFrame(game, DrawSquareStyleStrategies.valueOf(drawStrategyName)).setVisible(true));
+        SwingUtilities.invokeLater(() -> new GameFrame(game, DrawSquareStyles.valueOf(drawStrategyName)).setVisible(true));
 //        game.start();
     }
 }

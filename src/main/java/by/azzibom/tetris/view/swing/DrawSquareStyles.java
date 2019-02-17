@@ -1,6 +1,6 @@
 package by.azzibom.tetris.view.swing;
 
-import by.azzibom.tetris.model.tetris.figure.Tetromino;
+import by.azzibom.tetris.model.figure.Tetromino;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.Random;
 
 /**
  * @author azzibom
- * */
+ */
 public enum DrawSquareStyles implements DrawSquareStyle {
 
     DEFAULT_STYLE {

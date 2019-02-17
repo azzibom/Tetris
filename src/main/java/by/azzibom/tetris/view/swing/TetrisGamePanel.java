@@ -16,15 +16,15 @@ abstract class TetrisGamePanel extends JPanel {
 
     int pointSize = 20;
     TetrisGame game;
-    private DrawSquareStyleStrategy drawSquareStyleStrategy;
+    private DrawSquareStyle drawSquareStyleStrategy;
 
-    TetrisGamePanel(TetrisGame game, DrawSquareStyleStrategy drawSquareStyleStrategy) {
+    TetrisGamePanel(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy) {
         this.game = game;
         this.drawSquareStyleStrategy = drawSquareStyleStrategy;
     }
 
     void drawSquare(Graphics g, int x, int y, Tetromino shape) {
         // делегат... (делегируем обязанность)
-        drawSquareStyleStrategy.drawSquare(g, x, y, pointSize, shape);
+        drawSquareStyleStrategy.drawSquare(g, x, y, shape);
     }
 }

@@ -14,7 +14,7 @@ import java.awt.*;
  */
 public class TertisGameField extends TetrisGamePanel {
 
-    TertisGameField(TetrisGame game, DrawSquareStyleStrategy drawSquareStyleStrategy) {
+    TertisGameField(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy) {
         super(game, drawSquareStyleStrategy);
 
         Dimension dimension = new Dimension((game.getFieldWidth() + 4) * pointSize, game.getFieldHeight() * pointSize);

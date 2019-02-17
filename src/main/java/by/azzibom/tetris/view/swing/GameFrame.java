@@ -3,14 +3,13 @@ package by.azzibom.tetris.view.swing;
 import by.azzibom.tetris.model.TetrisGame;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.sun.jndi.toolkit.url.Uri;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * окно игры
@@ -31,9 +30,9 @@ public class GameFrame extends JFrame {
     private JPanel gameFieldContainer;
 
     private TetrisGame game;
-    private DrawSquareStyleStrategy drawSquareStyleStrategy;
+    private DrawSquareStyle drawSquareStyleStrategy;
 
-    public GameFrame(TetrisGame game, DrawSquareStyleStrategy drawSquareStyleStrategy) {
+    public GameFrame(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy) {
         this.game = game;
         this.drawSquareStyleStrategy = drawSquareStyleStrategy;
 
