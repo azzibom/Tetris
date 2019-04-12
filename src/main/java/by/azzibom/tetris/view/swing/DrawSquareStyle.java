@@ -6,7 +6,7 @@ import java.awt.*;
 
 /**
  * @author azzibom
- * */
+ */
 public interface DrawSquareStyle {
 
     void drawSquare(Graphics g, int x, int y, Tetromino shape);

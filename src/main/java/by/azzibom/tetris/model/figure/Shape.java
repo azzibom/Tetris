@@ -1,27 +1,44 @@
 package by.azzibom.tetris.model.figure;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
- * класс представляющий фигуры на игровом поле
+ * класс представляющий положение тетромин в пространстве
+ * <p>
+ * ..... -> ..... | ..... -> .....
+ * ..#.. -> ..#.. | .##.. -> .##..
+ * .###. -> ..##. | .##.. -> .##..
+ * ..... -> ..#.. | ..... -> .....
+ * ..... -> ..... | ..... -> .....
+ * ---------------+---------------
+ * ..... -> ..... | ..#.. -> .....
+ * ..#.. -> ..... | ..#.. -> .....
+ * ..#.. -> .###. | ..#.. -> .####
+ * ..##. -> .#... | ..#.. -> .....
+ * ..... -> ..... | ..... -> .....
  *
  * @author Ihar Misevich
  * @version 1.0
  */
 public class Shape {
 
+    private static Random r = new Random(); // для генерации случайной фигуры
+
     private int[][] coord; // координаты точек(квадратов) фигуры
     private Tetromino tetromino; // фигура
-    private Random r; // для генерации случайной фигуры
 
     public Shape() {
         coord = new int[4][2];
-        r = new Random();
+        setRandomTetromino();
     }
 
-    public Shape(Tetromino tetromino) {
+    public Shape(Shape shape) {
         this();
-        setTetromino(tetromino);
+        for (int i = 0; i < shape.getSize(); i++) {
+            this.coord[i] = Arrays.copyOf(shape.coord[i], shape.coord[i].length);
+        }
+        this.tetromino = shape.tetromino;
     }
 
     public void setTetromino(Tetromino tetromino) {
@@ -45,32 +62,22 @@ public class Shape {
         return coord.length;
     }
 
-    public Shape rotateLeft() {
-        if (tetromino == Tetromino.O)
-            return this;
-
-        Shape newShape = new Shape();
-        newShape.tetromino = this.tetromino;
-
-        for (int i = 0; i < 4; i++) {
-            newShape.setX(i, this.getY(i));
-            newShape.setY(i, -this.getX(i));
+    public void rotateLeft() {
+        int[][] newCoord = new int[coord.length][2];
+        for (int i = 0; i < coord.length; i++) {
+            newCoord[i][0] = coord[i][1];
+            newCoord[i][1] = -coord[i][0];
         }
-        return newShape;
+        this.coord = newCoord;
     }
 
-    public Shape rotateRight() {
-        if (tetromino == Tetromino.O)
-            return this;
-
-        Shape newShape = new Shape();
-        newShape.tetromino = this.tetromino;
-
-        for (int i = 0; i < 4; i++) {
-            newShape.setX(i, -this.getY(i));
-            newShape.setY(i, this.getX(i));
+    public void rotateRight() {
+        int[][] newCoord = new int[coord.length][2];
+        for (int i = 0; i < coord.length; i++) {
+            newCoord[i][0] = -coord[i][1];
+            newCoord[i][1] = coord[i][0];
         }
-        return newShape;
+        this.coord = newCoord;
     }
 
     private void setY(int i, int y) {

@@ -1,10 +1,11 @@
 package by.azzibom.tetris.model;
 
 import by.azzibom.tetris.model.figure.Shape;
-import by.azzibom.tetris.model.figure.Tetromino;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Класс игры тетриса.
@@ -52,7 +53,8 @@ public class TetrisGame {
     private int speed; // скорость падения фигур (т е игрового цикла)
 
     // игровое поле (состоит из тетромин для того что бы знать квадрат какой фигуры находится в ячейке поля)
-    private Tetromino[][] field;
+    private Shape[][] field;
+
     private Shape shape; // текущая(падающая) фигура
 
     // координаты падающей фигуры
@@ -64,16 +66,11 @@ public class TetrisGame {
     private Shape nextShape; // следующая фигура
 
     private boolean pause; // флаг паузы
-//    private enum Rotate {
-//        LEFT, RIGHT;
-//
-//    }
-//    private Rotate rotate;
 
     private String name; // имя игры
     private TetrisObservable observer = new TetrisObservable(); // объект издателя
 
-    private Thread gameThread; // покок игры
+    private Timer timer = new Timer("gameTimer", true);
 
     /**
      * конструктор инициализации игры
@@ -85,7 +82,7 @@ public class TetrisGame {
      */
     public TetrisGame(String name, int fieldWidth, int fieldHeight, int speed) {
         this.name = name;
-        field = new Tetromino[fieldWidth][fieldHeight];
+        field = new Shape[fieldWidth][fieldHeight];
 
         this.speed = speed; // скорость = 1
         score = 0; // очки = 0
@@ -96,8 +93,6 @@ public class TetrisGame {
 
         shape = new Shape();
         nextShape = new Shape();
-
-        //        rotate = Rotate.LEFT;
     }
 
     /**
@@ -118,35 +113,24 @@ public class TetrisGame {
         setGameOver(false); // не конец игры
         setPause(false); // не пауза
 
-        if (gameThread != null) return;
-
-        gameThread = new Thread(() -> {
-            while (!gameOver) {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
                 if (!pause) {
                     render();
                 }
 
                 observer.notifyObservers();
-                try {
-                    Thread.sleep(1000 / speed);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
-        });
-        gameThread.start();
+        }, 0, 1000 / speed);
     }
 
     /**
      * метод установки стартовой позиции для текущей фигуры
      */
     private void setStartPos() {
-        if (nextShape.getTetromino() != null) {
-            shape.setTetromino(nextShape.getTetromino());
-        } else {
-            shape.setRandomTetromino();
-        }
-        nextShape.setRandomTetromino();
+        shape = nextShape;
+        nextShape = new Shape();
         xShapePos = (getFieldWidth() / 2);
         yShapePos = 0;
     }
@@ -208,6 +192,7 @@ public class TetrisGame {
 
         observer.notifyObservers("score");
     }
+
 
     /**
      * метод установки количества удаленных фигур
@@ -289,7 +274,7 @@ public class TetrisGame {
                 if (newY > getFieldHeight() - 1) {
                     endMove = true;
                     for (int j = 0; j < 4; j++) {
-                        field[xShapePos + shape.getX(j)][yShapePos + shape.getY(j)] = shape.getTetromino();
+                        field[xShapePos + shape.getX(j)][yShapePos + shape.getY(j)] = shape;
                     }
                     return false;
                 }
@@ -302,7 +287,7 @@ public class TetrisGame {
                 if (field[xShapePos + shape.getX(i)][newY] != null) {
                     endMove = true;
                     for (int j = 0; j < 4; j++) {
-                        field[xShapePos + shape.getX(j)][yShapePos + shape.getY(j)] = shape.getTetromino();
+                        field[xShapePos + shape.getX(j)][yShapePos + shape.getY(j)] = shape;
                     }
                     return false;
                 }
@@ -318,6 +303,7 @@ public class TetrisGame {
     private boolean checkGameEnd() {
         for (int i = 0; i < 4; i++) {
             if (field[xShapePos + shape.getX(i)][yShapePos + shape.getY(i)] != null) {
+                timer.cancel();
                 return true;
             }
         }
@@ -328,8 +314,9 @@ public class TetrisGame {
      * метод поорота фигуры
      */
     public void rotate() {
-        Shape newShape;
-        newShape = shape.rotateLeft();
+        Shape newShape = new Shape(shape);
+        newShape.rotateLeft();
+
         if (tryMove(newShape, 0, 0)) {
             this.shape = newShape;
         }
@@ -353,7 +340,7 @@ public class TetrisGame {
     /**
      * метод получения игрового поля
      */
-    public Tetromino getField(int i, int j) {
+    public Shape getField(int i, int j) {
         return field[i][j];
     }
 

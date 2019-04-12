@@ -32,7 +32,7 @@ public class TertisGameField extends TetrisGamePanel {
             for (int j = 0; j < game.getFieldHeight(); j++) {
                 game.getField(i, j);
                 if (game.getField(i, j) != null) {
-                    drawSquare(g, i, j, game.getField(i, j));
+                    drawSquare(g, i, j, game.getField(i, j).getTetromino());
                 } else {
                     drawSquare(g, i, j, null);
                 }
