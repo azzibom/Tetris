@@ -20,7 +20,7 @@ public class Main {
         int fieldWidth = 10; // ширина поля
         int fieldHeight = 20; // высота толя
         int speed = 1; // начальная скорость
-        String drawStrategyName = "COLOR_STYLE"; // имя стратегии отрисовки
+        String drawStrategyName = "DEFAULT_STYLE"; // имя стратегии отрисовки
         // создаем игру
         TetrisGame game = new TetrisGame(gameName, fieldWidth, fieldHeight, speed);
         // создаем и запускаем фрейм
@@ -34,7 +34,7 @@ public class Main {
  * TODO: сделать меню "Справка", добвить "инструкции", "О программе"
  * TODO: сделать ввод параметров, для конфигурации игры.
  * TODO: сделать очередь следующих фигур.
- * TODO: сделать состояния игры (пауза, игра, и тд).
+ * TO: сделать состояния игры (пауза, игра, и тд).
  * TODO: отделить контроллер от action-а...
  * TODO: сделать реализацию на javaFX
  * TODO: сделать что бы можно было играть в двоем на 1ом компе

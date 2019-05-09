@@ -2,7 +2,6 @@ package by.azzibom.tetris.view.swing;
 
 import by.azzibom.tetris.controller.GameKeyController;
 import by.azzibom.tetris.model.TetrisGame;
-import by.azzibom.tetris.model.figure.Shape;
 
 import java.awt.*;
 
@@ -32,20 +31,18 @@ public class TertisGameField extends TetrisGamePanel {
             for (int j = 0; j < game.getFieldHeight(); j++) {
                 game.getField(i, j);
                 if (game.getField(i, j) != null) {
-                    drawSquare(g, i, j, game.getField(i, j).getTetromino());
+                    drawSquare(g, i, j, game.getField(i, j));
                 } else {
                     drawSquare(g, i, j, null);
                 }
             }
         }
-        // рисуем падающую фигуру
-        int xShapePos = game.getXShapePos();
-        int yShapePos = game.getYShapePos();
-        Shape shape = game.getShape();
-        for (int i = 0; i < 4; i++) {
-            int x = (xShapePos + shape.getX(i));
-            int y = (yShapePos + shape.getY(i));
-            drawSquare(g, x, y, shape.getTetromino());
-        }
+//        // рисуем падающую фигуру
+//        Shape shape = game.getShape();
+//
+//        int xShapePos = game.getXShapePos();
+//        int yShapePos = game.getYShapePos();
+//
+//        drawShape(g, xShapePos, yShapePos, shape);
     }
 }

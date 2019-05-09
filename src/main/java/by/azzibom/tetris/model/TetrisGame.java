@@ -11,7 +11,7 @@ import java.util.TimerTask;
  * Класс игры тетриса.
  *
  * @author Ihar Misevich
- * @version 1.0
+ * @since 1.1
  */
 public class TetrisGame {
 
@@ -21,6 +21,10 @@ public class TetrisGame {
     private static final int DEFAULT_FIELD_HEIGHT = 20;
     private static final int DEFAULT_SPEED = 1;
 
+    public State getState() {
+        return this.state;
+    }
+
     /**
      * перечисление очков начисляемых за удаление определенного количества линий
      * (подумать над изменением если вдркг будет 3-мино)
@@ -29,6 +33,7 @@ public class TetrisGame {
      * @version 1.0
      */
     private enum Scores {
+
         DELETED_1_lINE(100),
         DELETED_2_lINES(400),
         DELETED_3_lINES(700),
@@ -43,8 +48,6 @@ public class TetrisGame {
         public int getScore() {
             return score;
         }
-
-
     }
 
     private int score; // количество очков набранных игроком
@@ -72,6 +75,12 @@ public class TetrisGame {
 
     private Timer timer = new Timer("gameTimer", true);
 
+    public enum State {
+        NEW, GAME, PAUSED, GAME_OVER
+    }
+
+    private State state;
+
     /**
      * конструктор инициализации игры
      *
@@ -91,8 +100,7 @@ public class TetrisGame {
         endMove = true; // конец хода = да
         gameOver = true; // конец игры = да
 
-        shape = new Shape();
-        nextShape = new Shape();
+        state = State.NEW;
     }
 
     /**
@@ -110,9 +118,13 @@ public class TetrisGame {
      * метод запуса игры
      */
     public void start() {
+        shape = new Shape();
+        nextShape = new Shape();
+
         setGameOver(false); // не конец игры
         setPause(false); // не пауза
 
+        state = State.GAME;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -187,7 +199,7 @@ public class TetrisGame {
     /**
      * метод установки очков
      */
-    public void setScore(int score) {
+    private void setScore(int score) {
         this.score = score;
 
         observer.notifyObservers("score");
@@ -197,7 +209,7 @@ public class TetrisGame {
     /**
      * метод установки количества удаленных фигур
      */
-    public void setRemovedLines(int removedLines) {
+    private void setRemovedLines(int removedLines) {
         this.removedLines = removedLines;
 
         observer.notifyObservers("removedLines");
@@ -212,8 +224,6 @@ public class TetrisGame {
                 field[j][i] = field[j][i - 1];
             }
         }
-//        setChanged();
-//        notifyObservers("removeLine");
     }
 
     /**
@@ -261,7 +271,7 @@ public class TetrisGame {
      * метод проверки возможности хода
      */
     private boolean tryMove(Shape shape, int dx, int dy) {
-        for (int i = 0; i < 4; i++) { // проходим по квадратам фигуры
+        for (int i = 0; i < shape.getSize(); i++) { // проходим по квадратам фигуры
             // вычисляем новые координаты квадрата на поле
             int newX = xShapePos + dx + shape.getX(i);
             int newY = yShapePos + dy + shape.getY(i);
@@ -272,10 +282,7 @@ public class TetrisGame {
             try {
                 // проверяем не на дне ли фигура
                 if (newY > getFieldHeight() - 1) {
-                    endMove = true;
-                    for (int j = 0; j < 4; j++) {
-                        field[xShapePos + shape.getX(j)][yShapePos + shape.getY(j)] = shape;
-                    }
+                    endMove(shape);
                     return false;
                 }
 
@@ -285,16 +292,38 @@ public class TetrisGame {
 
                 // проверим не наткнемся ли мы на лежащую фигуру
                 if (field[xShapePos + shape.getX(i)][newY] != null) {
-                    endMove = true;
-                    for (int j = 0; j < 4; j++) {
-                        field[xShapePos + shape.getX(j)][yShapePos + shape.getY(j)] = shape;
-                    }
+                    endMove(shape);
                     return false;
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
+            } catch (ArrayIndexOutOfBoundsException ignored) {
             }
         }
         return true;
+    }
+
+
+    private void endMove(Shape shape) {
+        endMove = true;
+        setShapeOnField(shape);
+    }
+
+    private void setShapeOnField(Shape shape) {
+        for (int j = 0; j < shape.getSize(); j++) {
+            field[xShapePos + shape.getX(j)][yShapePos + shape.getY(j)] = shape;
+        }
+    }
+
+    private boolean getShapeOnField(Shape shape, int x, int y) {
+        if (shape != null) {
+            for (int i = 0; i < shape.getSize(); i++) {
+                int pointX = xShapePos + shape.getX(i);
+                int pointY = yShapePos + shape.getY(i);
+                if (x == pointX && y == pointY) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -341,7 +370,13 @@ public class TetrisGame {
      * метод получения игрового поля
      */
     public Shape getField(int i, int j) {
-        return field[i][j];
+        Shape shape = field[i][j];
+        if (shape == null) {
+            if (getShapeOnField(this.shape, i, j)) {
+                shape = this.shape;
+            }
+        }
+        return shape;
     }
 
     /**
@@ -370,6 +405,8 @@ public class TetrisGame {
      */
     public void setPause(boolean pause) {
         this.pause = pause;
+
+        state = State.PAUSED;
 
         observer.notifyObservers("pause");
     }
@@ -442,8 +479,11 @@ public class TetrisGame {
     /**
      * метод установки конца игры
      */
-    public void setGameOver(boolean gameOver) {
+    private void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
+
+        if (!gameOver) return;
+        state = State.GAME_OVER;
 
         observer.notifyObservers("gameOver");
     }

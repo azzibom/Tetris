@@ -29,10 +29,10 @@ public class NextShapeField extends TetrisGamePanel {
             }
         }
         Shape nextShape = game.getNextShape();
-        for (int i = 0; i < 4; i++) {
-            int x = ((countPoints / 2) + nextShape.getX(i));
-            int y = ((countPoints / 2) - 1 + nextShape.getY(i));
-            drawSquare(g, x, y, nextShape.getTetromino());
-        }
+
+        int xShapePos = (countPoints / 2);
+        int yShapePos = (countPoints / 2) - 1;
+
+        drawShape(g, xShapePos, yShapePos, nextShape);
     }
 }

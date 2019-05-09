@@ -1,7 +1,7 @@
 package by.azzibom.tetris.view.swing;
 
 import by.azzibom.tetris.model.TetrisGame;
-import by.azzibom.tetris.model.figure.Tetromino;
+import by.azzibom.tetris.model.figure.Shape;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +23,20 @@ abstract class TetrisGamePanel extends JPanel {
         this.drawSquareStyleStrategy = drawSquareStyleStrategy;
     }
 
-    void drawSquare(Graphics g, int x, int y, Tetromino shape) {
+    void drawSquare(Graphics g, int x, int y, Shape shape) {
         // делегат... (делегируем обязанность)
         drawSquareStyleStrategy.drawSquare(g, x, y, shape);
+    }
+
+    void drawShape(Graphics g, int xShapePos, int yShapePos, Shape shape) {
+        if (game.getState() == TetrisGame.State.GAME ||
+                game.getState() == TetrisGame.State.PAUSED) {
+
+            for (int i = 0; i < shape.getSize(); i++) {
+                int x = xShapePos + shape.getX(i);
+                int y = yShapePos + shape.getY(i);
+                drawSquare(g, x, y, shape);
+            }
+        }
     }
 }

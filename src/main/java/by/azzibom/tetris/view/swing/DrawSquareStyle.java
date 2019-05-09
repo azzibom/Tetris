@@ -1,6 +1,6 @@
 package by.azzibom.tetris.view.swing;
 
-import by.azzibom.tetris.model.figure.Tetromino;
+import by.azzibom.tetris.model.figure.Shape;
 
 import java.awt.*;
 
@@ -9,5 +9,5 @@ import java.awt.*;
  */
 public interface DrawSquareStyle {
 
-    void drawSquare(Graphics g, int x, int y, Tetromino shape);
+    void drawSquare(Graphics g, int x, int y, Shape shape);
 }

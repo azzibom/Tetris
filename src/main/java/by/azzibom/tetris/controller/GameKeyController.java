@@ -22,20 +22,13 @@ public class GameKeyController extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
 
-        if (game.isGameOver())
-            return;
+        if (game.isGameOver()) return;
 
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            if (game.isPause()) {
-                game.setPause(false);
-            } else {
-                game.setPause(true);
-            }
+            game.setPause(!game.isPause());
         }
 
-        if (game.isPause()) {
-            return;
-        }
+        if (game.isPause()) return;
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP: {
