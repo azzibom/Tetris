@@ -66,8 +66,6 @@ public class GameFrame extends JFrame {
     // метод для кастомного создания компонентов
     // компоненты создаются после до конструктора
     private void createUIComponents() {
-
-
         this.gameField = new TertisGameField(game, drawSquareStyleStrategy);
         this.nextShapeField = new NextShapeField(game, drawSquareStyleStrategy);
 
