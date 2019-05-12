@@ -9,5 +9,5 @@ import java.awt.*;
  */
 public interface DrawSquareStyle {
 
-    void drawSquare(Graphics g, int x, int y, Shape shape);
+    void drawSquare(Graphics g, int x, int y, Shape shape, int pointSize);
 }

@@ -14,18 +14,19 @@ import java.awt.*;
  */
 abstract class TetrisGamePanel extends JPanel {
 
-    int pointSize = 20;
+    int pointSize;
     TetrisGame game;
     private DrawSquareStyle drawSquareStyleStrategy;
 
-    TetrisGamePanel(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy) {
+    TetrisGamePanel(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy, int pointSize) {
         this.game = game;
         this.drawSquareStyleStrategy = drawSquareStyleStrategy;
+        this.pointSize = pointSize;
     }
 
     void drawSquare(Graphics g, int x, int y, Shape shape) {
         // делегат... (делегируем обязанность)
-        drawSquareStyleStrategy.drawSquare(g, x, y, shape);
+        drawSquareStyleStrategy.drawSquare(g, x, y, shape, pointSize);
     }
 
     void drawShape(Graphics g, int xShapePos, int yShapePos, Shape shape) {

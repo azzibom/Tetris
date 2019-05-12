@@ -63,6 +63,10 @@ public class Shape {
     }
 
     public void rotateLeft() {
+        if (this.tetromino == Tetromino.O) {
+            return;
+        }
+
         int[][] newCoord = new int[coord.length][2];
         for (int i = 0; i < coord.length; i++) {
             newCoord[i][0] = coord[i][1];
@@ -80,19 +84,7 @@ public class Shape {
         this.coord = newCoord;
     }
 
-    private void setY(int i, int y) {
-        coord[i][1] = y;
-    }
-
-    private void setX(int i, int x) {
-        coord[i][0] = x;
-    }
-
     public void setRandomTetromino() {
         setTetromino(Tetromino.values()[r.nextInt(Tetromino.values().length)]);
-    }
-
-    public Tetromino getTetromino() {
-        return tetromino;
     }
 }

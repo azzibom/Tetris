@@ -14,7 +14,7 @@ import java.awt.*;
 public class TertisGameField extends TetrisGamePanel {
 
     TertisGameField(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy) {
-        super(game, drawSquareStyleStrategy);
+        super(game, drawSquareStyleStrategy, 20);
 
         Dimension dimension = new Dimension((game.getFieldWidth() + 4) * pointSize, game.getFieldHeight() * pointSize);
         super.setPreferredSize(dimension);// если указать это поле то размер окна будет нужным прииспользовании функции pack
