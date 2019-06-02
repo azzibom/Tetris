@@ -1,9 +1,9 @@
 package by.azzibom.tetris.model;
 
+import by.azzibom.observer.Observable;
+import by.azzibom.observer.ObservableImpl;
 import by.azzibom.tetris.model.figure.Shape;
 
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,7 +13,7 @@ import java.util.TimerTask;
  * @author Ihar Misevich
  * @since 1.1
  */
-public class TetrisGame {
+public class TetrisGame implements Observable<TetrisEvent<?>> {
 
     // настройки по умолчанию
     private static final String DEFAULT_NAME = "Tetris";
@@ -23,31 +23,6 @@ public class TetrisGame {
 
     public State getState() {
         return this.state;
-    }
-
-    /**
-     * перечисление очков начисляемых за удаление определенного количества линий
-     * (подумать над изменением если вдркг будет 3-мино)
-     *
-     * @author Ihar Misevich
-     * @version 1.0
-     */
-    private enum Scores {
-
-        DELETED_1_lINE(100),
-        DELETED_2_lINES(400),
-        DELETED_3_lINES(700),
-        DELETED_4_lINES(1500);
-
-        private int score;
-
-        Scores(int score) {
-            this.score = score;
-        }
-
-        public int getScore() {
-            return score;
-        }
     }
 
     private int score; // количество очков набранных игроком
@@ -65,21 +40,15 @@ public class TetrisGame {
     private int yShapePos;
     private boolean endMove; // флаг конца хода
 
-    private boolean gameOver; // флаг конца игры
     private Shape nextShape; // следующая фигура
 
-    private boolean pause; // флаг паузы
-
     private String name; // имя игры
-    private TetrisObservable observer = new TetrisObservable(); // объект издателя
 
     private Timer timer = new Timer("gameTimer", true);
 
-    public enum State {
-        NEW, GAME, PAUSED, GAME_OVER
-    }
-
     private State state;
+
+    private Observable<TetrisEvent<?>> observable = new ObservableImpl<>();
 
     /**
      * конструктор инициализации игры
@@ -98,7 +67,7 @@ public class TetrisGame {
         removedLines = 0; // удаленных линий = 0
 
         endMove = true; // конец хода = да
-        gameOver = true; // конец игры = да
+//        gameOver = true; // конец игры = да
 
         state = State.NEW;
     }
@@ -121,18 +90,18 @@ public class TetrisGame {
         shape = new Shape();
         nextShape = new Shape();
 
-        setGameOver(false); // не конец игры
         setPause(false); // не пауза
 
         state = State.GAME;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (!pause) {
+                if (!isPause()) {
                     render();
                 }
 
-                observer.notifyObservers();
+//                observer.notifyObservers();
+                observable.notifyObservers(null);
             }
         }, 0, 1000 / speed);
     }
@@ -155,7 +124,10 @@ public class TetrisGame {
             removeFullLines();
             endMove = false;
             setStartPos();
-            setGameOver(checkGameEnd());
+
+            if(checkGameEnd())
+                setGameOver();
+
         } else {
             oneLineDown();
         }
@@ -200,9 +172,10 @@ public class TetrisGame {
      * метод установки очков
      */
     private void setScore(int score) {
+        int oldScore = this.score;
         this.score = score;
 
-        observer.notifyObservers("score");
+        observable.notifyObservers(new TetrisEvent<>("score", oldScore, score));
     }
 
 
@@ -210,9 +183,10 @@ public class TetrisGame {
      * метод установки количества удаленных фигур
      */
     private void setRemovedLines(int removedLines) {
+        int oldValue = this.removedLines;
         this.removedLines = removedLines;
 
-        observer.notifyObservers("removedLines");
+        observable.notifyObservers(new TetrisEvent<>("removedLines", oldValue, removedLines));
     }
 
     /**
@@ -264,7 +238,7 @@ public class TetrisGame {
             xShapePos += dx;
             yShapePos += dy;
         }
-        observer.notifyObservers();
+        observable.notifyObservers(null);
     }
 
     /**
@@ -349,7 +323,7 @@ public class TetrisGame {
         if (tryMove(newShape, 0, 0)) {
             this.shape = newShape;
         }
-        observer.notifyObservers();
+        observable.notifyObservers(null);
     }
 
     /**
@@ -400,29 +374,41 @@ public class TetrisGame {
         return yShapePos;
     }
 
-    /**
-     * метод установки паузы
-     */
-    public void setPause(boolean pause) {
-        this.pause = pause;
-
-        state = State.PAUSED;
-
-        observer.notifyObservers("pause");
+    private void setState(State newState) {
+        State oldState = state;
+        state = newState;
+        observable.notifyObservers(new TetrisEvent<>("state", oldState, newState));
     }
 
     /**
      * метод получения статуса паузы
      */
     public boolean isPause() {
-        return pause;
+        return state == State.PAUSED;
+    }
+
+    /**
+     * метод установки паузы
+     */
+    public void setPause(boolean pause) {
+        if (isGameOver()) {
+            throw new IllegalStateException("game is over");
+        }
+        setState(pause ? State.PAUSED : State.GAME);
     }
 
     /**
      * метод полученя статуса конца игры
      */
     public boolean isGameOver() {
-        return gameOver;
+        return state == State.GAME_OVER;
+    }
+
+    /**
+     * метод установки конца игры
+     */
+    private void setGameOver() {
+        setState(State.GAME_OVER);
     }
 
     /**
@@ -461,45 +447,26 @@ public class TetrisGame {
     }
 
     /**
-     * добавление слушателей
-     */
-    public void addObserver(Observer o) {
-        observer.addObserver(o);
-    }
-
-    /**
      * метод установки скорости
      */
-    public void setSpeed(int speed) {
-        this.speed = speed;
+    public void setSpeed(int newSpeed) {
+        int oldSpeed = this.speed;
+        this.speed = newSpeed;
 
-        observer.notifyObservers("speed");
+        observable.notifyObservers(new TetrisEvent<>("speed", oldSpeed, newSpeed));
+    }
+    @Override
+    public void notifyObservers(TetrisEvent<?> arg) {
+        observable.notifyObservers(arg);
     }
 
-    /**
-     * метод установки конца игры
-     */
-    private void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
-
-        if (!gameOver) return;
-        state = State.GAME_OVER;
-
-        observer.notifyObservers("gameOver");
+    @Override
+    public void addObserver(by.azzibom.observer.Observer<TetrisEvent<?>> observer) {
+        observable.addObserver(observer);
     }
 
-    /**
-     * внутрений класс издателя для игры
-     *
-     * @author Ihar Misevich
-     * @version 1.0
-     */
-    private class TetrisObservable extends Observable {
-
-        @Override
-        public void notifyObservers(Object arg) {
-            super.setChanged();
-            super.notifyObservers(arg);
-        }
+    @Override
+    public void removeObserver(by.azzibom.observer.Observer<TetrisEvent<?>> observer) {
+        observable.removeObserver(observer);
     }
 }

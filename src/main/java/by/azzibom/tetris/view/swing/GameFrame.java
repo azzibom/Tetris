@@ -1,5 +1,8 @@
 package by.azzibom.tetris.view.swing;
 
+import by.azzibom.observer.Observer;
+import by.azzibom.tetris.model.State;
+import by.azzibom.tetris.model.TetrisEvent;
 import by.azzibom.tetris.model.TetrisGame;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -8,8 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * окно игры
@@ -218,25 +219,52 @@ public class GameFrame extends JFrame {
      * @author Ihar Misevich
      * @version 1.0
      */
-    private class GameObserver implements Observer {
-        @Override
-        public void update(Observable o, Object arg) {
-            if (arg != null) {
-                if (arg.equals("removedLines"))
-                    removeLineValueLabel.setText(String.valueOf(game.getRemovedLines()));
-                if (arg.equals("score"))
-                    scoreValueLabel.setText(String.valueOf(game.getScore()));
-                if (arg.equals("speed"))
-                    speedValueLabel.setText(String.valueOf(game.getSpeed()));
-                if (arg.equals("pause") && game.isPause())
-                    statusLabelValue.setEnabled(true);
-                else
-                    statusLabelValue.setEnabled(false);
+    private class GameObserver implements Observer<TetrisEvent<?>> {
+//        @Override
+//        public void update(Observable o, Object arg) {
+//            if (arg != null) {
+//                if (arg.equals("removedLines"))
+//                    removeLineValueLabel.setText(String.valueOf(game.getRemovedLines()));
+//                if (arg.equals("score"))
+//                    scoreValueLabel.setText(String.valueOf(game.getScore()));
+//                if (arg.equals("speed"))
+//                    speedValueLabel.setText(String.valueOf(game.getSpeed()));
+//                if (arg.equals("pause") && game.isPause())
+//                    statusLabelValue.setEnabled(true);
+//                else
+//                    statusLabelValue.setEnabled(false);
+//
+//                if (arg.equals("gameOver") && game.isGameOver()) {
+//                    statusLabelValue.setEnabled(true);
+//                    statusLabelValue.setForeground(Color.RED);
+//                    statusLabelValue.setText("Game Over!");
+//                }
+//            }
+//            repaint();
+//        }
 
-                if (arg.equals("gameOver") && game.isGameOver()) {
-                    statusLabelValue.setEnabled(true);
-                    statusLabelValue.setForeground(Color.RED);
-                    statusLabelValue.setText("Game Over!");
+        @Override
+        public void update(TetrisEvent<?> arg) {
+            System.out.println(arg);
+            if (arg != null) {
+                if (arg.getName().equals("removedLines"))
+                    removeLineValueLabel.setText(String.valueOf(game.getRemovedLines()));
+                if (arg.getName().equals("score"))
+                    scoreValueLabel.setText(String.valueOf(game.getScore()));
+                if (arg.getName().equals("speed"))
+                    speedValueLabel.setText(String.valueOf(game.getSpeed()));
+                if (arg.getName().equals("state")) {
+                    if (State.PAUSED.equals(arg.getNewValue())) {
+                        System.out.println("pause");
+                        statusLabelValue.setEnabled(true);
+                    } else if (State.GAME.equals(arg.getNewValue())) {
+                        System.out.println("game");
+                        statusLabelValue.setEnabled(false);
+                    } else if (State.GAME_OVER.equals(arg.getNewValue())) {
+                        statusLabelValue.setText("Game Over!");
+                        statusLabelValue.setEnabled(true);
+                        statusLabelValue.setForeground(Color.RED);
+                    }
                 }
             }
             repaint();
