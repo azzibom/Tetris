@@ -5,7 +5,7 @@ import by.azzibom.tetris.model.figure.Shape;
 import java.awt.*;
 
 /**
- * @author azzibom
+ * @author Ihar Misevich
  */
 public interface DrawSquareStyle {
 

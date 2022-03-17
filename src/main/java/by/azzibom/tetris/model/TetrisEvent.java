@@ -1,10 +1,13 @@
 package by.azzibom.tetris.model;
 
+/**
+ * @author Ihar MIsevich
+ * */
 public class TetrisEvent<T> {
 
-    private String name;
-    private T oldValue;
-    private T newValue;
+    private final String name;
+    private final T oldValue;
+    private final T newValue;
 
     public TetrisEvent(String name, T oldValue, T newValue) {
         this.name = name;

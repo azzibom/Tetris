@@ -11,7 +11,6 @@ import java.util.TimerTask;
  * Класс игры тетриса.
  *
  * @author Ihar Misevich
- * @since 1.1
  */
 public class TetrisGame implements Observable<TetrisEvent<?>> {
 
@@ -84,7 +83,7 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     }
 
     /**
-     * метод запуса игры
+     * метод запуска игры
      */
     public void start() {
         shape = new Shape();
@@ -134,7 +133,7 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     }
 
     /**
-     * метод удаления всех заполненых строк
+     * метод удаления всех заполненных строк
      */
     private int removeFullLines() {
         int countRemoveLine = 0;
@@ -157,7 +156,7 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     }
 
     /**
-     * метод проверки заполнености линии
+     * метод проверки заполненности линии
      */
     private boolean checkFullLine(int num) {
         for (int j = 0; j < getFieldWidth(); j++) {
@@ -314,7 +313,7 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     }
 
     /**
-     * метод поорота фигуры
+     * метод поворота фигуры
      */
     public void rotate() {
         Shape newShape = new Shape(shape);
@@ -327,7 +326,7 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     }
 
     /**
-     * метод полчения ширины игрового поля
+     * метод получения ширины игрового поля
      */
     public int getFieldWidth() {
         return field.length;
@@ -398,7 +397,7 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     }
 
     /**
-     * метод полученя статуса конца игры
+     * метод получения статуса конца игры
      */
     public boolean isGameOver() {
         return state == State.GAME_OVER;
@@ -433,7 +432,7 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     }
 
     /**
-     * метод получния скорости игры
+     * метод получения скорости игры
      */
     public int getSpeed() {
         return speed;

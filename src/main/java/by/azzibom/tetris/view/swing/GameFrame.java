@@ -16,7 +16,6 @@ import java.util.List;
  * окно игры
  *
  * @author Ihar Misevich
- * @version 1.0
  */
 public class GameFrame extends JFrame {
 
@@ -29,8 +28,8 @@ public class GameFrame extends JFrame {
     private JLabel speedValueLabel;
     private JLabel statusLabelValue;
 
-    private TetrisGame game;
-    private DrawSquareStyle drawSquareStyleStrategy;
+    private final TetrisGame game;
+    private final DrawSquareStyle drawSquareStyleStrategy;
 
     public GameFrame(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy) {
         this.game = game;
@@ -214,7 +213,7 @@ public class GameFrame extends JFrame {
     }
 
     /**
-     * внутрений класс подпищика(наблюдателя)
+     * внутренний класс подписчика(наблюдателя)
      *
      * @author Ihar Misevich
      * @version 1.0

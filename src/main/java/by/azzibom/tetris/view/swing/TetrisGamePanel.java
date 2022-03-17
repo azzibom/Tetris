@@ -11,13 +11,12 @@ import java.awt.*;
  * абстрактный класс панель с данными для игрового поля и поля следующей фигуры
  *
  * @author Ihar Misevich
- * @version 1.0
  */
 abstract class TetrisGamePanel extends JPanel {
 
     int pointSize;
     TetrisGame game;
-    private DrawSquareStyle drawSquareStyleStrategy;
+    private final DrawSquareStyle drawSquareStyleStrategy;
 
     TetrisGamePanel(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy, int pointSize) {
         this.game = game;

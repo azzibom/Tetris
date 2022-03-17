@@ -8,13 +8,12 @@ import java.awt.*;
  * панель для отображения следующей фигуры
  *
  * @author Ihar Misevich
- * @version 1.0
  */
 public class NextShapeField extends TetrisGamePanel {
 
-    private int countPoints = 5;//
+    private final int countPoints = 5;//
 
-    private int shapePos = (countPoints / 2);
+    private final int shapePos = (countPoints / 2);
 //    private int xShapePos = (countPoints / 2);
 //    private int yShapePos = (countPoints / 2);
 

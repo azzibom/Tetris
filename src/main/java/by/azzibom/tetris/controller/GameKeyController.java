@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
  * класс реагирующий на нажатия кнопок на клавиатуре и изменяющий модель
  *
  * @author Ihar Misevich
- * @version 1.0
  */
 public class GameKeyController extends KeyAdapter {
 

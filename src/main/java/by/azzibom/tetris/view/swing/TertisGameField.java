@@ -9,7 +9,6 @@ import java.awt.*;
  * панель игрового поля
  *
  * @author Ihar Misevich
- * @version 1.0
  */
 public class TertisGameField extends TetrisGamePanel {
 
@@ -17,7 +16,7 @@ public class TertisGameField extends TetrisGamePanel {
         super(game, drawSquareStyleStrategy, 20);
 
         Dimension dimension = new Dimension((game.getFieldWidth() + 4) * pointSize, game.getFieldHeight() * pointSize);
-        super.setPreferredSize(dimension);// если указать это поле то размер окна будет нужным прииспользовании функции pack
+        super.setPreferredSize(dimension);// если указать это поле, то размер окна будет нужным при использовании функции pack
 
         super.setFocusable(true);
 

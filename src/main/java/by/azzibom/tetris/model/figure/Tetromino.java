@@ -1,11 +1,10 @@
 package by.azzibom.tetris.model.figure;
 
 /**
- * перечисление возмонх фигур
+ * перечисление возможных фигур
  * т е прототипы...
  *
  * @author Ihar Misevich
- * @version 1.0
  */
 public enum Tetromino {
 

@@ -19,11 +19,10 @@ import java.util.Random;
  * ..... -> ..... | ..... -> .....
  *
  * @author Ihar Misevich
- * @version 1.0
  */
 public class Shape {
 
-    private static Random r = new Random(); // для генерации случайной фигуры
+    private static final Random r = new Random(); // для генерации случайной фигуры
 
     private int[][] coord; // координаты точек(квадратов) фигуры
     private Tetromino tetromino; // фигура

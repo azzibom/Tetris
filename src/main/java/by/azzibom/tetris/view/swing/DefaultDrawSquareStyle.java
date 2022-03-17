@@ -4,6 +4,9 @@ import by.azzibom.tetris.model.figure.Shape;
 
 import java.awt.*;
 
+/**
+ * @author Ihar MIsevich
+ * */
 public class DefaultDrawSquareStyle implements DrawSquareStyle {
 
     @Override
