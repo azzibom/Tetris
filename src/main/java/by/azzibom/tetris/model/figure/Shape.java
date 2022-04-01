@@ -44,8 +44,8 @@ public class Shape {
 
     public void setMino(Tetromino tetromino) {
         for (int i = 0; i < tetromino.getSize(); i++) {
-            this.coord[i][0] = tetromino.getSquareCoord(i, Polimino.Coord.X);
-            this.coord[i][1] = tetromino.getSquareCoord(i, Polimino.Coord.Y);
+            this.coord[i][0] = tetromino.getSquareCoord(i, Polymino.Coord.X);
+            this.coord[i][1] = tetromino.getSquareCoord(i, Polymino.Coord.Y);
         }
         this.tetromino = tetromino;
     }

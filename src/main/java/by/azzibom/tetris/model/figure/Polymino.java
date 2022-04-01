@@ -1,6 +1,6 @@
 package by.azzibom.tetris.model.figure;
 
-public interface Polimino {
+public interface Polymino {
 
     enum Coord {
         X(0), Y(1);
@@ -19,4 +19,6 @@ public interface Polimino {
     int getSquareCoord(int i, Coord coord);
 
     int getSize();
+
+    boolean isRotate();
 }
