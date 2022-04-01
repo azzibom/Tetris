@@ -30,7 +30,7 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     private int speed; // скорость падения фигур (т е игрового цикла)
 
     // игровое поле (состоит из тетромин для того что бы знать квадрат какой фигуры находится в ячейке поля)
-    private Shape[][] field;
+    private final Shape[][] field;
 
     private Shape shape; // текущая(падающая) фигура
 
@@ -41,13 +41,13 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
 
     private Shape nextShape; // следующая фигура
 
-    private String name; // имя игры
+    private final String name; // имя игры
 
-    private Timer timer = new Timer("gameTimer", true);
+    private final Timer timer = new Timer("gameTimer", true);
 
     private State state;
 
-    private Observable<TetrisEvent<?>> observable = new ObservableImpl<>();
+    private final Observable<TetrisEvent<?>> observable = new ObservableImpl<>();
 
     /**
      * конструктор инициализации игры
