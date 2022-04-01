@@ -6,7 +6,7 @@ package by.azzibom.tetris.model.figure;
  *
  * @author Ihar Misevich
  */
-public enum Tetromino {
+public enum Tetromino implements Polimino {
 
     I(new int[][]{{-2, 0}, {-1, 0}, {0, 0}, {1, 0}}),
     S(new int[][]{{-1, 1}, {0, 1}, {0, 0}, {1, 0}}),
@@ -22,11 +22,16 @@ public enum Tetromino {
         this.coord = coord;
     }
 
-    public int getSquareCoord(int i, int j) {
-        return this.coord[i][j];
+    @Override
+    public int getSquareCoord(int i, Coord coord) {
+        return this.coord[i][coord.getValue()];
     }
 
     public int getSize() {
         return coord.length;
+    }
+
+    public boolean isRotate() {
+        return !(this == Tetromino.O);
     }
 }

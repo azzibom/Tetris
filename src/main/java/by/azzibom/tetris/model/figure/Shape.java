@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * класс представляющий положение тетромин в пространстве
+ * класс представляющий положение фигур в пространстве
  * <p>
+ * <pre>
  * ..... -> ..... | ..... -> .....
  * ..#.. -> ..#.. | .##.. -> .##..
  * .###. -> ..##. | .##.. -> .##..
@@ -17,6 +18,7 @@ import java.util.Random;
  * ..#.. -> .###. | ..#.. -> .####
  * ..##. -> .#... | ..#.. -> .....
  * ..... -> ..... | ..... -> .....
+ *  </pre>
  *
  * @author Ihar Misevich
  */
@@ -40,11 +42,10 @@ public class Shape {
         this.tetromino = shape.tetromino;
     }
 
-    public void setTetromino(Tetromino tetromino) {
+    public void setMino(Tetromino tetromino) {
         for (int i = 0; i < tetromino.getSize(); i++) {
-            for (int j = 0; j < 2; j++) {
-                this.coord[i][j] = tetromino.getSquareCoord(i, j);
-            }
+            this.coord[i][0] = tetromino.getSquareCoord(i, Polimino.Coord.X);
+            this.coord[i][1] = tetromino.getSquareCoord(i, Polimino.Coord.Y);
         }
         this.tetromino = tetromino;
     }
@@ -62,7 +63,7 @@ public class Shape {
     }
 
     public void rotateLeft() {
-        if (this.tetromino == Tetromino.O) {
+        if (!this.tetromino.isRotate()) {
             return;
         }
 
@@ -84,6 +85,6 @@ public class Shape {
     }
 
     public void setRandomTetromino() {
-        setTetromino(Tetromino.values()[r.nextInt(Tetromino.values().length)]);
+        setMino(Tetromino.values()[r.nextInt(Tetromino.values().length)]);
     }
 }
