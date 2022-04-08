@@ -1,14 +1,13 @@
 package by.azzibom.tetris.view.swing;
 
-import by.azzibom.observer.Observer;
 import by.azzibom.tetris.model.State;
-import by.azzibom.tetris.model.TetrisEvent;
 import by.azzibom.tetris.model.TetrisGame;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,9 +52,8 @@ public class GameFrame extends JFrame {
         super.setResizable(false);
 
         super.setLocationRelativeTo(null);
-//        super.setVisible(true);
 
-        this.game.addObserver(new GameObserver());
+        this.game.addPropertyChangeListener(this::propertyChange);
 
         removeLineValueLabel.setText(String.valueOf(game.getRemovedLines()));
         scoreValueLabel.setText(String.valueOf(game.getScore()));
@@ -212,61 +210,27 @@ public class GameFrame extends JFrame {
         return contentField;
     }
 
-    /**
-     * внутренний класс подписчика(наблюдателя)
-     *
-     * @author Ihar Misevich
-     * @version 1.0
-     */
-    private class GameObserver implements Observer<TetrisEvent<?>> {
-//        @Override
-//        public void update(Observable o, Object arg) {
-//            if (arg != null) {
-//                if (arg.equals("removedLines"))
-//                    removeLineValueLabel.setText(String.valueOf(game.getRemovedLines()));
-//                if (arg.equals("score"))
-//                    scoreValueLabel.setText(String.valueOf(game.getScore()));
-//                if (arg.equals("speed"))
-//                    speedValueLabel.setText(String.valueOf(game.getSpeed()));
-//                if (arg.equals("pause") && game.isPause())
-//                    statusLabelValue.setEnabled(true);
-//                else
-//                    statusLabelValue.setEnabled(false);
-//
-//                if (arg.equals("gameOver") && game.isGameOver()) {
-//                    statusLabelValue.setEnabled(true);
-//                    statusLabelValue.setForeground(Color.RED);
-//                    statusLabelValue.setText("Game Over!");
-//                }
-//            }
-//            repaint();
-//        }
-
-        @Override
-        public void update(TetrisEvent<?> arg) {
-            System.out.println(arg);
-            if (arg != null) {
-                if (arg.getName().equals("removedLines"))
-                    removeLineValueLabel.setText(String.valueOf(game.getRemovedLines()));
-                if (arg.getName().equals("score"))
-                    scoreValueLabel.setText(String.valueOf(game.getScore()));
-                if (arg.getName().equals("speed"))
-                    speedValueLabel.setText(String.valueOf(game.getSpeed()));
-                if (arg.getName().equals("state")) {
-                    if (State.PAUSED.equals(arg.getNewValue())) {
-                        System.out.println("pause");
-                        statusLabelValue.setEnabled(true);
-                    } else if (State.GAME.equals(arg.getNewValue())) {
-                        System.out.println("game");
-                        statusLabelValue.setEnabled(false);
-                    } else if (State.GAME_OVER.equals(arg.getNewValue())) {
-                        statusLabelValue.setText("Game Over!");
-                        statusLabelValue.setEnabled(true);
-                        statusLabelValue.setForeground(Color.RED);
-                    }
-                }
+    private void propertyChange(PropertyChangeEvent evt) {
+        System.out.println(evt);
+        if (evt.getPropertyName().equals("removedLines"))
+            removeLineValueLabel.setText(String.valueOf(game.getRemovedLines()));
+        if (evt.getPropertyName().equals("score"))
+            scoreValueLabel.setText(String.valueOf(game.getScore()));
+        if (evt.getPropertyName().equals("speed"))
+            speedValueLabel.setText(String.valueOf(game.getSpeed()));
+        if (evt.getPropertyName().equals("state")) {
+            if (State.PAUSED.equals(evt.getNewValue())) {
+                System.out.println("pause");
+                statusLabelValue.setEnabled(true);
+            } else if (State.GAME.equals(evt.getNewValue())) {
+                System.out.println("game");
+                statusLabelValue.setEnabled(false);
+            } else if (State.GAME_OVER.equals(evt.getNewValue())) {
+                statusLabelValue.setText("Game Over!");
+                statusLabelValue.setEnabled(true);
+                statusLabelValue.setForeground(Color.RED);
             }
-            repaint();
         }
+        repaint();
     }
 }

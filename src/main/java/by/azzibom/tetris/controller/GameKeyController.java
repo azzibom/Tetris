@@ -12,7 +12,7 @@ import java.awt.event.KeyEvent;
  */
 public class GameKeyController extends KeyAdapter {
 
-    private TetrisGame game;
+    private final TetrisGame game;
 
     public GameKeyController(TetrisGame game) {
         this.game = game;

@@ -1,9 +1,10 @@
 package by.azzibom.tetris.model;
 
-import by.azzibom.observer.Observable;
-import by.azzibom.observer.ObservableImpl;
 import by.azzibom.tetris.model.figure.Shape;
 
+import java.awt.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -12,13 +13,16 @@ import java.util.TimerTask;
  *
  * @author Ihar Misevich
  */
-public class TetrisGame implements Observable<TetrisEvent<?>> {
+public class TetrisGame {
+
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     // настройки по умолчанию
     private static final String DEFAULT_NAME = "Tetris";
     private static final int DEFAULT_FIELD_WIDTH = 10;
     private static final int DEFAULT_FIELD_HEIGHT = 20;
     private static final int DEFAULT_SPEED = 1;
+    private boolean dropDown = false;
 
     public State getState() {
         return this.state;
@@ -46,8 +50,6 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     private final Timer timer = new Timer("gameTimer", true);
 
     private State state;
-
-    private final Observable<TetrisEvent<?>> observable = new ObservableImpl<>();
 
     /**
      * конструктор инициализации игры
@@ -98,9 +100,6 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
                 if (!isPause()) {
                     render();
                 }
-
-//                observer.notifyObservers();
-                observable.notifyObservers(null);
             }
         }, 0, 1000 / speed);
     }
@@ -109,10 +108,22 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
      * метод установки стартовой позиции для текущей фигуры
      */
     private void setStartPos() {
-        shape = nextShape;
-        nextShape = new Shape();
+        setShape(nextShape);
+        setNextShape(new Shape());
         xShapePos = (getFieldWidth() / 2);
         yShapePos = 0;
+    }
+
+    private void setShape(Shape newShape) {
+        Shape old = this.shape;
+        this.shape = newShape;
+        pcs.firePropertyChange("shape", old, newShape);
+    }
+
+    private void setNextShape(Shape newShape) {
+        Shape old = this.nextShape;
+        this.nextShape = newShape;
+        pcs.firePropertyChange("nextShape", old, newShape);
     }
 
     /**
@@ -171,10 +182,10 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
      * метод установки очков
      */
     private void setScore(int score) {
-        int oldScore = this.score;
+        final int old = this.score;
         this.score = score;
 
-        observable.notifyObservers(new TetrisEvent<>("score", oldScore, score));
+        pcs.firePropertyChange("score", old, score);
     }
 
 
@@ -182,10 +193,9 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
      * метод установки количества удаленных фигур
      */
     private void setRemovedLines(int removedLines) {
-        int oldValue = this.removedLines;
+        final int old = this.removedLines;
         this.removedLines = removedLines;
-
-        observable.notifyObservers(new TetrisEvent<>("removedLines", oldValue, removedLines));
+        pcs.firePropertyChange("removedLines", old, removedLines);
     }
 
     /**
@@ -221,23 +231,36 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     }
 
     /**
-     * сбрс фигуры на дно
+     * сброс фигуры на дно
      */
     public void dropDown() {
+        final Point old = getShapePos();
+        dropDown = true;
         while (!endMove) {
             oneLineDown();
         }
+        dropDown = false;
+        final Point newShapePos = getShapePos();
+        pcs.firePropertyChange("dropDown", old, newShapePos);
     }
 
     /**
      * метод перемещения фигуры
      */
     private void moveShape(int dx, int dy) {
+        final Point old = getShapePos();
         if (tryMove(shape, dx, dy)) {
             xShapePos += dx;
             yShapePos += dy;
         }
-        observable.notifyObservers(null);
+        if (!dropDown) {
+            final Point newShapePos = getShapePos();
+            pcs.firePropertyChange("moveShape", old, newShapePos);
+        }
+    }
+
+    private Point getShapePos() {
+        return new Point(xShapePos, yShapePos);
     }
 
     /**
@@ -316,13 +339,14 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
      * метод поворота фигуры
      */
     public void rotate() {
+        Shape old = new Shape(shape);
         Shape newShape = new Shape(shape);
         newShape.rotateLeft();
 
         if (tryMove(newShape, 0, 0)) {
             this.shape = newShape;
         }
-        observable.notifyObservers(null);
+        pcs.firePropertyChange("rotate", old, newShape);
     }
 
     /**
@@ -374,9 +398,9 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
     }
 
     private void setState(State newState) {
-        State oldState = state;
+        State old = state;
         state = newState;
-        observable.notifyObservers(new TetrisEvent<>("state", oldState, newState));
+        pcs.firePropertyChange("state", old, newState);
     }
 
     /**
@@ -449,23 +473,24 @@ public class TetrisGame implements Observable<TetrisEvent<?>> {
      * метод установки скорости
      */
     public void setSpeed(int newSpeed) {
-        int oldSpeed = this.speed;
+        final int old = this.speed;
         this.speed = newSpeed;
-
-        observable.notifyObservers(new TetrisEvent<>("speed", oldSpeed, newSpeed));
-    }
-    @Override
-    public void notifyObservers(TetrisEvent<?> arg) {
-        observable.notifyObservers(arg);
+        pcs.firePropertyChange("speed", old, newSpeed);
     }
 
-    @Override
-    public void addObserver(by.azzibom.observer.Observer<TetrisEvent<?>> observer) {
-        observable.addObserver(observer);
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
     }
 
-    @Override
-    public void removeObserver(by.azzibom.observer.Observer<TetrisEvent<?>> observer) {
-        observable.removeObserver(observer);
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(propertyName, listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(propertyName, listener);
     }
 }
