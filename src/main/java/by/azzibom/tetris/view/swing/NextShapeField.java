@@ -14,8 +14,6 @@ public class NextShapeField extends TetrisGamePanel {
     private final int countPoints = 5;//
 
     private final int shapePos = (countPoints / 2);
-//    private int xShapePos = (countPoints / 2);
-//    private int yShapePos = (countPoints / 2);
 
     NextShapeField(TetrisGame game, DrawSquareStyle drawSquareStyleStrategy) {
         super(game, drawSquareStyleStrategy, 16);

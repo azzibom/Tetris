@@ -25,10 +25,8 @@ public class TertisGameField extends TetrisGamePanel {
 
     @Override
     public void paint(Graphics g) {
-//        super.paint(g);
         for (int i = 0; i < game.getFieldWidth(); i++) {
             for (int j = 0; j < game.getFieldHeight(); j++) {
-                game.getField(i, j);
                 if (game.getField(i, j) != null) {
                     drawSquare(g, i, j, game.getField(i, j));
                 } else {
@@ -36,12 +34,5 @@ public class TertisGameField extends TetrisGamePanel {
                 }
             }
         }
-//        // рисуем падающую фигуру
-//        Shape shape = game.getShape();
-//
-//        int xShapePos = game.getXShapePos();
-//        int yShapePos = game.getYShapePos();
-//
-//        drawShape(g, xShapePos, yShapePos, shape);
     }
 }

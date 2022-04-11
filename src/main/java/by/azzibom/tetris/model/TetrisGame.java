@@ -49,7 +49,7 @@ public class TetrisGame {
 
     private final Timer timer = new Timer("gameTimer", true);
 
-    private State state;
+    private State state = State.NEW;
 
     /**
      * конструктор инициализации игры
@@ -68,9 +68,6 @@ public class TetrisGame {
         removedLines = 0; // удаленных линий = 0
 
         endMove = true; // конец хода = да
-//        gameOver = true; // конец игры = да
-
-        state = State.NEW;
     }
 
     /**
@@ -121,7 +118,7 @@ public class TetrisGame {
     }
 
     private void setNextShape(Shape newShape) {
-        Shape old = this.nextShape;
+        final Shape old = this.nextShape;
         this.nextShape = newShape;
         pcs.firePropertyChange("nextShape", old, newShape);
     }
@@ -269,9 +266,9 @@ public class TetrisGame {
     private boolean tryMove(Shape shape, int dx, int dy) {
         for (int i = 0; i < shape.getSize(); i++) { // проходим по квадратам фигуры
             // вычисляем новые координаты квадрата на поле
-            int newX = xShapePos + dx + shape.getX(i);
-            int newY = yShapePos + dy + shape.getY(i);
-            // проверяем не сдвигаемся ли фигура за края вправо и в влево
+            final int newX = xShapePos + dx + shape.getX(i);
+            final int newY = yShapePos + dy + shape.getY(i);
+            // проверяем не сдвигаемся ли фигура за края вправо и влево
             if (newX < 0 || newX > getFieldWidth() - 1 /*|| newY < 0*/) {
                 return false;
             }
@@ -312,8 +309,8 @@ public class TetrisGame {
     private boolean getShapeOnField(Shape shape, int x, int y) {
         if (shape != null) {
             for (int i = 0; i < shape.getSize(); i++) {
-                int pointX = xShapePos + shape.getX(i);
-                int pointY = yShapePos + shape.getY(i);
+                final int pointX = xShapePos + shape.getX(i);
+                final int pointY = yShapePos + shape.getY(i);
                 if (x == pointX && y == pointY) {
                     return true;
                 }
@@ -339,14 +336,14 @@ public class TetrisGame {
      * метод поворота фигуры
      */
     public void rotate() {
-        Shape old = new Shape(shape);
-        Shape newShape = new Shape(shape);
+        final Shape old = shape;
+        final Shape newShape = new Shape(shape);
         newShape.rotateLeft();
 
         if (tryMove(newShape, 0, 0)) {
             this.shape = newShape;
         }
-        pcs.firePropertyChange("rotate", old, newShape);
+        pcs.firePropertyChange("rotate", old, this.shape);
     }
 
     /**
@@ -398,7 +395,7 @@ public class TetrisGame {
     }
 
     private void setState(State newState) {
-        State old = state;
+        final State old = state;
         state = newState;
         pcs.firePropertyChange("state", old, newState);
     }
